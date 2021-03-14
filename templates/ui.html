@@ -1,12 +1,41 @@
 <html>
     <head>
         <title>Squaker</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='squaker.css') }}">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     </head>
     <body>
-        <form action="/" method="post">
-            <textarea name="message"></textarea>
+        <div id="message_area"></div>
+        <br/>
+        <form action="/" method="post" onsubmit="event.preventDefault(); save_message();">
+            <input name="message" id="message"/>
             <br/>
-            <input type="submit"/>
+            <input type="button" id="save_message_button" value="Send Message"/>
+            <input id="latest_message" value="{{message_count}}" type="hidden"/>
         </form>
     </body>
+    <script>
+    $(document).ready(function() {
+        function save_message() {
+            $.post("/save_message", {message: $("#message").val()}, function(n_messages) {
+                $("#message").val("").focus();
+            });
+        }
+
+        function update_messages(){
+            $.get("/get_new_messages/"+$("#latest_message").val(), function(data){
+                $("#latest_message").val(data.count);
+                $.each(data.messages, function(i, new_message) {
+                    $("#message_area").prepend("<p>" + new_message + "</p>");
+                });
+            });
+        }
+
+        $("#save_message_button").click(function() {
+            save_message();
+        });
+
+        setInterval(function(){ update_messages(); }, 500);
+    });
+    </script>
 </html>

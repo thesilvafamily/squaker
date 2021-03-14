@@ -1,0 +1,16 @@
+#message_area {
+    min-height: 200px;
+}
+
+#message {
+    line-height: 20pt;
+}
+
+#message, #message_area {
+    border: 1px solid gray;
+    border-radius: 10px;
+    font-family: 'Arial';
+    display: block;
+    width: 100%;
+    font-size: 16pt;
+}
